@@ -2,7 +2,7 @@
 
 import random
 
-from database.insert_data import insert_order
+from insert_data import insert_order
 
 TOTAL_ORDERS = 20000
 TOTAL_CUSTOMERS = 1000
