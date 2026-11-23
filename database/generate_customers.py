@@ -2,7 +2,7 @@
 
 from faker import Faker
 
-from database.insert_data import insert_customer
+from insert_data import insert_customer
 
 fake = Faker("en_IN")
 TOTAL_CUSTOMERS = 1000
