@@ -1,6 +1,9 @@
 """Database insert helpers for the e-commerce pipeline."""
 
-from database.db_connection import get_connection
+try:
+    from .db_connection import get_connection
+except ImportError:  # Supports running scripts directly from the repository root.
+    from db_connection import get_connection
 
 
 def _insert(query, values):
