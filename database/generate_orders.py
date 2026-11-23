@@ -1,41 +1,32 @@
+"""Generate synthetic order records."""
+
 import random
+
 from insert_data import insert_order
 
 TOTAL_ORDERS = 20000
+TOTAL_CUSTOMERS = 1000
+TOTAL_PRODUCTS = 500
 
-print("🚀 Generating Orders...\n")
+ORDER_STATUSES = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"]
 
-order_status = [
-    "Pending",
-    "Processing",
-    "Shipped",
-    "Delivered",
-    "Cancelled"
-]
 
-for i in range(1, TOTAL_ORDERS + 1):
+def main():
+    print(f"Generating {TOTAL_ORDERS} orders...")
+    for index in range(1, TOTAL_ORDERS + 1):
+        customer_id = random.randint(1, TOTAL_CUSTOMERS)
+        product_id = random.randint(1, TOTAL_PRODUCTS)
+        quantity = random.randint(1, 5)
+        unit_price = random.randint(500, 100000)
+        total_amount = quantity * unit_price
+        status = random.choice(ORDER_STATUSES)
 
-    customer_id = random.randint(1, 1001)
+        insert_order(customer_id, product_id, quantity, total_amount, status)
 
-    product_id = random.randint(1, 500)
+        if index % 100 == 0:
+            print(f"Inserted {index}/{TOTAL_ORDERS} orders")
+    print("Order generation completed.")
 
-    quantity = random.randint(1, 5)
 
-    price = random.randint(500, 100000)
-
-    total_amount = quantity * price
-
-    status = random.choice(order_status)
-
-    insert_order(
-        customer_id,
-        product_id,
-        quantity,
-        total_amount,
-        status
-    )
-
-    if i % 100 == 0:
-        print(f"✅ {i} Orders Inserted")
-
-print("\n🎉 20,000 Orders Inserted Successfully!")
+if __name__ == "__main__":
+    main()

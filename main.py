@@ -1,25 +1,28 @@
-"""
-E-Commerce Cloud Data Engineering Pipeline
-Entry point: runs the full ETL pipeline end-to-end.
-"""
+"""Run the complete e-commerce data pipeline in dependency order."""
 
 import subprocess
 import sys
 
-steps = [
-    ("Database Connection Test", "database/db_connection.py"),
-    ("Generate Fake Customers",  "database/generate_fake_data.py"),
-    ("Generate Orders",          "database/generate_orders.py"),
-    ("Export CSV Files",         "database/export_csv.py"),
+STEPS = [
+    ("Database connection test", "database/db_connection.py"),
+    ("Generate customers", "database/generate_customers.py"),
+    ("Generate products", "database/generate_fake_data.py"),
+    ("Generate orders", "database/generate_orders.py"),
+    ("Export CSV files", "database/export_csv.py"),
 ]
 
-for name, script in steps:
-    print(f"\n{'='*50}")
-    print(f"▶ Running: {name}")
-    print('='*50)
-    result = subprocess.run([sys.executable, script], capture_output=False)
-    if result.returncode != 0:
-        print(f"❌ Failed at: {name}")
-        sys.exit(1)
 
-print("\n✅ Full ETL Pipeline Completed Successfully!")
+def main():
+    for label, script in STEPS:
+        print(f"\n{'=' * 60}\nRunning: {label}\n{'=' * 60}")
+        result = subprocess.run([sys.executable, script], check=False)
+        if result.returncode != 0:
+            print(f"Pipeline stopped: {label} failed with exit code {result.returncode}.")
+            return result.returncode
+
+    print("\nPipeline completed successfully.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
