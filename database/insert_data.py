@@ -1,83 +1,44 @@
-from db_connection import get_connection
+"""Database insert helpers for the e-commerce pipeline."""
+
+from database.db_connection import get_connection
 
 
-# -----------------------------
-# Insert Customer
-# -----------------------------
+def _insert(query, values):
+    """Execute one parameterized insert and always close the connection."""
+    conn = get_connection()
+    try:
+        with conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query, values)
+    finally:
+        conn.close()
+
+
 def insert_customer(first_name, last_name, email, phone, city, country):
-    conn = get_connection()
-    cursor = conn.cursor()
-
     query = """
-    INSERT INTO customers
-    (first_name, last_name, email, phone, city, country)
-    VALUES (%s, %s, %s, %s, %s, %s)
+        INSERT INTO customers
+            (first_name, last_name, email, phone, city, country)
+        VALUES (%s, %s, %s, %s, %s, %s)
     """
-
-    values = (
-        first_name,
-        last_name,
-        email,
-        phone,
-        city,
-        country
-    )
-
-    cursor.execute(query, values)
-    conn.commit()
-
-    print("✅ Customer inserted successfully!")
-
-    cursor.close()
-    conn.close()
+    _insert(query, (first_name, last_name, email, phone, city, country))
 
 
-# -----------------------------
-# Insert Product
-# -----------------------------
 def insert_product(product_name, category, brand, price, stock):
-    conn = get_connection()
-    cursor = conn.cursor()
-
     query = """
-    INSERT INTO products
-    (product_name, category, brand, price, stock)
-    VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO products
+            (product_name, category, brand, price, stock)
+        VALUES (%s, %s, %s, %s, %s)
     """
+    _insert(query, (product_name, category, brand, price, stock))
 
-    values = (
-        product_name,
-        category,
-        brand,
-        price,
-        stock
-    )
 
-   # -----------------------------
-# Insert Order
-# -----------------------------
 def insert_order(customer_id, product_id, quantity, total_amount, order_status):
-
-    conn = get_connection()
-    cursor = conn.cursor()
-
     query = """
-    INSERT INTO orders
-    (customer_id, product_id, quantity, total_amount, order_status)
-    VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO orders
+            (customer_id, product_id, quantity, total_amount, order_status)
+        VALUES (%s, %s, %s, %s, %s)
     """
-
-    values = (
-        customer_id,
-        product_id,
-        quantity,
-        total_amount,
-        order_status
+    _insert(
+        query,
+        (customer_id, product_id, quantity, total_amount, order_status),
     )
-
-    cursor.execute(query, values)
-
-    conn.commit()
-
-    cursor.close()
-    conn.close()
